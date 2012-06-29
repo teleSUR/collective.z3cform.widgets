@@ -21,9 +21,9 @@ from collective.z3cform.widgets import _
 
 
 class RelatedSearch(AutocompleteSearch):
-    
+
     display_template = ViewPageTemplateFile('related_search.pt')
- 
+
     def __call__(self):
 
         # We want to check that the user was indeed allowed to access the
@@ -55,7 +55,7 @@ class RelatedSearch(AutocompleteSearch):
     def getTermByBrain(self, brain):
         # Ask the widget
         return self.context.getTermByBrain(brain)
-   
+
     def search(self, query='', limit=None):
         portal_tool = getToolByName(self.context, "portal_url")
         self.portal_path = portal_tool.getPortalPath()
@@ -68,11 +68,12 @@ class RelatedSearch(AutocompleteSearch):
 
         results =  source.catalog(**catalog_query)
         return results
-          
+
 
 class FetchRelated(Fetch):
     fragment_template = ViewPageTemplateFile('fragment.pt')
     recurse_template = ViewPageTemplateFile('input_recurse.pt')
+
 
 class MultiContentSearchWidget(MultiContentTreeWidget):
     display_template = ViewPageTemplateFile('related_display.pt')
@@ -121,7 +122,7 @@ class MultiContentSearchWidget(MultiContentTreeWidget):
         self.unchecked = self.unchecked[lower:upper]
 
         self.items = self.checked + self.unchecked
-        
+
     def render_tree(self, relPath=None, query=None, limit=10):
         content = self.context
         portal_state = getMultiAdapter((self.context, self.request),
@@ -136,7 +137,7 @@ class MultiContentSearchWidget(MultiContentTreeWidget):
             root_path = portal_state.navigation_root_path()
             rel_path = root_path + '/' + relPath
             strategy.rootPath = rel_path
-        
+
         if not source.selectable_filter.criteria:
             data = buildFolderTree(portal,
                                obj=portal,
@@ -161,7 +162,7 @@ class MultiContentSearchWidget(MultiContentTreeWidget):
 
         results =  source.catalog(**catalog_query)
         return results
-    
+
     def brainsToTerms(self, brains):
         portal_state = getMultiAdapter((self.context, self.request),
                                           name=u'plone_portal_state')
@@ -189,12 +190,12 @@ class MultiContentSearchWidget(MultiContentTreeWidget):
             if result:
                 brain = result[0]
                 items.append(strategy.decoratorFactory({'item':brain}))
-        
+
         return self.selected_template(children=items, level=1)
-        
+
     def renderQueryWidget(self):
         return self.checkbox_template()
-    
+
     def related_url(self):
         """Generate the URL that returns autocomplete results for this form
         """
@@ -244,14 +245,14 @@ class MultiContentSearchWidget(MultiContentTreeWidget):
                         // alert(event + ', ' + selected + ', ' + data + ', ' + title);
                     }
                 );
-                
+
                 $("#relatedWidget-search-button").unbind("click")
-            	$("#relatedWidget-search-button").live("click", function(event) {
-            	    event.preventDefault();
-            	    var urlSearch = '%(urlSearch)s'
-            	    relatedWidgetSearchFilter(urlSearch);
-            	    return false;
-            	});
+                $("#relatedWidget-search-button").live("click", function(event) {
+                    event.preventDefault();
+                    var urlSearch = '%(urlSearch)s'
+                    relatedWidgetSearchFilter(urlSearch);
+                    return false;
+                });
 
         """ % dict(url=url,
                    urlSearch=self.related_url(),
