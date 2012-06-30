@@ -66,7 +66,22 @@ class RelatedSearch(AutocompleteSearch):
         if limit and 'sort_limit' not in catalog_query:
             catalog_query['sort_limit'] = limit
 
-        results =  source.catalog(**catalog_query)
+        #HACK:
+        # The CustomFilter from the plone.formwidget.contenttree transform the
+        # values to list. See github issue #9.
+        #
+        new_query = {}
+        for key, value in catalog_query.iteritems():
+            if key not in ['portal_type', 'SearchableText', 'sort_limit']:
+                if len(value) > 0:
+                    new_query[key] = value.pop()
+            elif key in ['sort_limit',]:
+                if len(value) > 0:
+                    new_query[key] = int(value.pop())
+            else:
+                new_query[key] = value
+
+        results =  source.catalog(**new_query)
         return results
 
 
@@ -160,7 +175,22 @@ class MultiContentSearchWidget(MultiContentTreeWidget):
         if limit and 'sort_limit' not in catalog_query:
             catalog_query['sort_limit'] = limit
 
-        results =  source.catalog(**catalog_query)
+        #HACK:
+        # The CustomFilter from the plone.formwidget.contenttree transform the
+        # values to list. See github issue #9.
+        #
+        new_query = {}
+        for key, value in catalog_query.iteritems():
+            if key not in ['portal_type', 'SearchableText', 'sort_limit']:
+                if len(value) > 0:
+                    new_query[key] = value.pop()
+            elif key in ['sort_limit',]:
+                if len(value) > 0:
+                    new_query[key] = int(value.pop())
+            else:
+                new_query[key] = value
+
+        results =  source.catalog(**new_query)
         return results
 
     def brainsToTerms(self, brains):
